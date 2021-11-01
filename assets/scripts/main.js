@@ -5,7 +5,10 @@
 const recipes = [
   'https://introweb.tech/assets/json/ghostCookies.json',
   'https://introweb.tech/assets/json/birthdayCake.json',
-  'https://introweb.tech/assets/json/chocolateChip.json'
+  'https://introweb.tech/assets/json/chocolateChip.json',
+  './assets/recipes/chickenTikiMasala.json',
+  './assets/recipes/OrangeChicken.json',
+  './assets/recipes/ChickenAlfredo.json',
 ];
 
 // Once all of the recipes that were specified above have been fetched, their
@@ -43,6 +46,19 @@ async function fetchRecipes() {
     // in the recipes folder and fetch them from there. You'll need to add their paths to the recipes array.
 
     // Part 1 Expose - TODO
+
+    for ( let i = 0; i < recipes.length; i ++){
+      fetch(recipes[i])
+      .then(response => response.json())
+      .then(data => {
+        recipeData[recipes[i]] = data;
+        if(Object.keys(recipeData).length === recipes.length)
+          resolve(true);
+      }).catch(err => reject(false));
+      
+    }
+    console.log(recipeData);
+
   });
 }
 
@@ -54,6 +70,16 @@ function createRecipeCards() {
   // show any others you've added when the user clicks on the "Show more" button.
 
   // Part 1 Expose - TODO
+
+  let main = document.querySelector('main');
+
+  for (let i = 0; i < 3; i ++){
+    let child = document.createElement('recipe-card');
+    child.data = recipeData[recipes[i]];
+    main.appendChild(child);
+  }
+
+
 }
 
 function bindShowMore() {
@@ -65,4 +91,30 @@ function bindShowMore() {
   // in the recipeData object where you stored them/
 
   // Part 2 Explore - TODO
+
+  let but = document.querySelector('button')
+  but.addEventListener('click', ()=>{
+    if(but.innerHTML == "Show more"){
+      let main = document.querySelector('main');
+      for (let i = 3; i < 6; i ++){
+        let child = document.createElement('recipe-card');
+        child.data = recipeData[recipes[i]];
+        child.id = "kid number " + i;
+        main.appendChild(child);
+      }
+      but.innerHTML = "Show less";
+    } else {
+      let main = document.querySelector('main');
+      for(let i = 3; i < 6; i ++){
+        let kid = document.getElementById('kid number ' + i).remove();
+        // main.removeChild(kid);
+      }
+      but.innerHTML = "Show more";
+    }
+
+    
+    
+    
+
+  });
 }

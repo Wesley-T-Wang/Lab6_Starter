@@ -1,6 +1,8 @@
 class RecipeCard extends HTMLElement {
   constructor() {
     // Part 1 Expose - TODO
+    super();
+    this.attachShadow({mode: 'open'});
 
     // You'll want to attach the shadow DOM here
   }
@@ -87,6 +89,63 @@ class RecipeCard extends HTMLElement {
 
     // Here's the root element that you'll want to attach all of your other elements to
     const card = document.createElement('article');
+
+    let image = document.createElement('img');
+    image.setAttribute('src', searchForKey(data, 'thumbnailUrl'));
+    card.appendChild(image);
+
+    let title = document.createElement('p');
+    title.setAttribute('class', title);
+
+    let link = document.createElement('a');
+    link.setAttribute('href', getUrl(data));
+    link.text=searchForKey(data, 'headline');
+    card.appendChild(link);
+    card.appendChild(title);
+
+    let chefsOrganization = document.createElement('p');
+    chefsOrganization.setAttribute('class', 'title');
+    chefsOrganization.textContent = getOrganization(data);
+    card.append(chefsOrganization);
+
+    let rate = document.createElement('div');
+    rate.setAttribute('class', 'rating');
+    let review = document.createElement('span');
+    let count = document.createElement('span')
+
+    if(searchForKey(data, 'ratingValue')){
+      review.textContent = searchForKey(data, 'ratingValue');
+
+      let starpic = document.createElement('img');
+      let average = Math.round(searchForKey(data, 'ratingValue'));
+
+      count.textContent = '(' + searchForKey(data, 'ratingValue') + ')';
+      starpic.setAttribute('src', './assets/images/icons/' + average + '-star.svg');
+
+      rate.appendChild(review);
+      rate.appendChild(starpic);
+      rate.append(count);
+      
+    } else {
+      review.textContent = 'No Reviews';
+      rate.append(review);
+    }
+
+    card.appendChild(rate);
+
+    let time = document.createElement('time');
+    let total =  searchForKey(data, 'totalTime');
+    time.textcontent = convertTime(total);
+    card.appendChild(time);
+
+    let ing = document.createElement('p');
+    ing.setAttribute('class', 'ingredients');
+    let i = searchForKey(data, 'recipeIngredient');
+    ing.textContent = i;
+    card.appendChild(ing);
+
+    this.shadowRoot.appendChild(styleElem);
+    this.shadowRoot.appendChild(card);
 
     // Some functions that will be helpful here:
     //    document.createElement()
